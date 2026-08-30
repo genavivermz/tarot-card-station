@@ -1,0 +1,111 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+DIR="$(cd "$(dirname "$0")" && pwd)/cards"
+mkdir -p "$DIR"
+UA="TarotReadingStation/1.0 (educational personal project; public-domain Rider-Waite-Smith scans from Wikimedia Commons)"
+
+download() {
+  local title="$1"
+  local dest="$2"
+  local path="$DIR/$dest"
+  if [[ -f "$path" && $(stat -f%z "$path" 2>/dev/null || echo 0) -gt 50000 ]]; then
+    echo "skip $dest"
+    return
+  fi
+  echo "fetching $title -> $dest"
+  encoded="$(python3 -c "import urllib.parse,sys; print(urllib.parse.quote(sys.argv[1]))" "$title")"
+  curl -fsSL --retry 3 --retry-delay 1 \
+    -A "$UA" \
+    -o "$path" \
+    "https://commons.wikimedia.org/wiki/Special:FilePath/${encoded}"
+  size=$(stat -f%z "$path")
+  echo "  saved $dest (${size} bytes)"
+  sleep 0.2
+}
+
+download "RWS Tarot 00 Fool.jpg" "00-the-fool.jpg"
+download "RWS Tarot 01 Magician.jpg" "01-the-magician.jpg"
+download "RWS Tarot 02 High Priestess.jpg" "02-the-high-priestess.jpg"
+download "RWS Tarot 03 Empress.jpg" "03-the-empress.jpg"
+download "RWS Tarot 04 Emperor.jpg" "04-the-emperor.jpg"
+download "RWS Tarot 05 Hierophant.jpg" "05-the-hierophant.jpg"
+download "RWS Tarot 06 Lovers.jpg" "06-the-lovers.jpg"
+download "RWS Tarot 07 Chariot.jpg" "07-the-chariot.jpg"
+download "RWS Tarot 08 Strength.jpg" "08-strength.jpg"
+download "RWS Tarot 09 Hermit.jpg" "09-the-hermit.jpg"
+download "RWS Tarot 10 Wheel of Fortune.jpg" "10-wheel-of-fortune.jpg"
+download "RWS Tarot 11 Justice.jpg" "11-justice.jpg"
+download "RWS Tarot 12 Hanged Man.jpg" "12-the-hanged-man.jpg"
+download "RWS Tarot 13 Death.jpg" "13-death.jpg"
+download "RWS Tarot 14 Temperance.jpg" "14-temperance.jpg"
+download "RWS Tarot 15 Devil.jpg" "15-the-devil.jpg"
+download "RWS Tarot 16 Tower.jpg" "16-the-tower.jpg"
+download "RWS Tarot 17 Star.jpg" "17-the-star.jpg"
+download "RWS Tarot 18 Moon.jpg" "18-the-moon.jpg"
+download "RWS Tarot 19 Sun.jpg" "19-the-sun.jpg"
+download "RWS Tarot 20 Judgement.jpg" "20-judgement.jpg"
+download "RWS Tarot 21 World.jpg" "21-the-world.jpg"
+download "Wands01.jpg" "wands-01-ace.jpg"
+download "Wands02.jpg" "wands-02.jpg"
+download "Wands03.jpg" "wands-03.jpg"
+download "Wands04.jpg" "wands-04.jpg"
+download "Wands05.jpg" "wands-05.jpg"
+download "Wands06.jpg" "wands-06.jpg"
+download "Wands07.jpg" "wands-07.jpg"
+download "Wands08.jpg" "wands-08.jpg"
+download "Wands09.jpg" "wands-09.jpg"
+download "Wands10.jpg" "wands-10.jpg"
+download "Wands11.jpg" "wands-11-page.jpg"
+download "Wands12.jpg" "wands-12-knight.jpg"
+download "Wands13.jpg" "wands-13-queen.jpg"
+download "Wands14.jpg" "wands-14-king.jpg"
+download "Cups01.jpg" "cups-01-ace.jpg"
+download "Cups02.jpg" "cups-02.jpg"
+download "Cups03.jpg" "cups-03.jpg"
+download "Cups04.jpg" "cups-04.jpg"
+download "Cups05.jpg" "cups-05.jpg"
+download "Cups06.jpg" "cups-06.jpg"
+download "Cups07.jpg" "cups-07.jpg"
+download "Cups08.jpg" "cups-08.jpg"
+download "Cups09.jpg" "cups-09.jpg"
+download "Cups10.jpg" "cups-10.jpg"
+download "Cups11.jpg" "cups-11-page.jpg"
+download "Cups12.jpg" "cups-12-knight.jpg"
+download "Cups13.jpg" "cups-13-queen.jpg"
+download "Cups14.jpg" "cups-14-king.jpg"
+download "Swords01.jpg" "swords-01-ace.jpg"
+download "Swords02.jpg" "swords-02.jpg"
+download "Swords03.jpg" "swords-03.jpg"
+download "Swords04.jpg" "swords-04.jpg"
+download "Swords05.jpg" "swords-05.jpg"
+download "Swords06.jpg" "swords-06.jpg"
+download "Swords07.jpg" "swords-07.jpg"
+download "Swords08.jpg" "swords-08.jpg"
+download "Swords09.jpg" "swords-09.jpg"
+download "Swords10.jpg" "swords-10.jpg"
+download "Swords11.jpg" "swords-11-page.jpg"
+download "Swords12.jpg" "swords-12-knight.jpg"
+download "Swords13.jpg" "swords-13-queen.jpg"
+download "Swords14.jpg" "swords-14-king.jpg"
+download "Pents01.jpg" "pentacles-01-ace.jpg"
+download "Pents02.jpg" "pentacles-02.jpg"
+download "Pents03.jpg" "pentacles-03.jpg"
+download "Pents04.jpg" "pentacles-04.jpg"
+download "Pents05.jpg" "pentacles-05.jpg"
+download "Pents06.jpg" "pentacles-06.jpg"
+download "Pents07.jpg" "pentacles-07.jpg"
+download "Pents08.jpg" "pentacles-08.jpg"
+download "Pents09.jpg" "pentacles-09.jpg"
+download "Pents10.jpg" "pentacles-10.jpg"
+download "Pents11.jpg" "pentacles-11-page.jpg"
+download "Pents12.jpg" "pentacles-12-knight.jpg"
+download "Pents13.jpg" "pentacles-13-queen.jpg"
+download "Pents14.jpg" "pentacles-14-king.jpg"
+
+count=$(ls -1 "$DIR"/*.jpg | wc -l | tr -d ' ')
+echo "Done. $count cards in $DIR"
+if [[ "$count" != "78" ]]; then
+  echo "Expected 78 files" >&2
+  exit 1
+fi
